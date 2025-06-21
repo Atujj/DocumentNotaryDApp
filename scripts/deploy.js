@@ -1,16 +1,14 @@
-const hre = require("hardhat");
+const { ethers } = require("hardhat");
 
 async function main() {
-    await hre.run('compile');
+  const DocumentNotary = await ethers.getContractFactory("DocumentNotary");
+  const contract = await DocumentNotary.deploy();
+  await contract.deployed();
 
-    const DocumentNotary = await hre.ethers.getContractFactory("DocumentNotary");
-    const notary = await DocumentNotary.deploy();
-    await notary.deployed();
-
-    console.log(`✅ DocumentNotary deployed to: ${notary.address}`);
+  console.log("DocumentNotary deployed to:", contract.address);
 }
 
 main().catch((error) => {
-    console.error("❌ Deployment failed:", error);
-    process.exitCode = 1;
+  console.error(error);
+  process.exitCode = 1;
 });
