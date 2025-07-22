@@ -8,6 +8,7 @@ contract DocumentNotary {
     }
 
     mapping(bytes32 => Document) public documents;
+    bytes32[] public docHashes; // To store all registered document hashes
 
     event DocumentRegistered(bytes32 docHash, address indexed submitter, uint256 timestamp);
 
@@ -15,6 +16,7 @@ contract DocumentNotary {
         require(documents[docHash].timestamp == 0, "Document already registered");
 
         documents[docHash] = Document(msg.sender, block.timestamp);
+        docHashes.push(docHash); // Add to the list
         emit DocumentRegistered(docHash, msg.sender, block.timestamp);
     }
 
@@ -24,5 +26,10 @@ contract DocumentNotary {
             return (false, address(0), 0);
         }
         return (true, doc.submitter, doc.timestamp);
+    }
+
+    // ✅ New useful function: Returns total number of registered documents
+    function getDocumentCount() public view returns (uint256) {
+        return docHashes.length;
     }
 }
